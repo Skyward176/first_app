@@ -1,17 +1,67 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'destination.dart';
-import 'destination_view.dart';
 import 'package:flutter/rendering.dart';
 
-void main() => runApp(DialedIn());
 
-class DialedIn extends StatefulWidget {
-  @override
-  _DialedInState createState() => _DialedInState();
+class Destination {
+  const Destination(this.title, this.icon, this.color);
+  final String title;
+  final IconData icon;
+  final MaterialColor color;
 }
 
-class _DialedInState extends State<DialedIn> with TickerProviderStateMixin<DialedIn> {
+const List<Destination> allDestinations = <Destination>[
+  Destination('Timer', Icons.timer, Colors.grey),
+  Destination('History', Icons.history, Colors.grey),
+];
+
+class DestinationView extends StatefulWidget{
+  const DestinationView({Key key, this.destination}) : super(key: key);
+  final Destination destination;
+  @override
+  _DestinationViewState createState() => _DestinationViewState();
+}
+
+class _DestinationViewState extends State<DestinationView> {
+  TextEditingController _textController;
+
+  @override 
+  void initState() {
+    super.initState();
+    _textController = TextEditingController(
+      text: 'sample text: ${widget.destination.title}',
+    );
+  }
+
+  @override 
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('${widget.destination.title} Text'),
+        backgroundColor: widget.destination.color[900],
+      ),
+      backgroundColor: widget.destination.color[800],
+      body: Container(
+        padding: const EdgeInsets.all(32.0),
+        alignment: Alignment.center,
+        child: TextField(controller: _textController),
+      ),
+    );
+  }
+
+  @override 
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+}
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin<HomePage> {
   int _currentIndex = 0;
 
   @override 
@@ -22,18 +72,38 @@ class _DialedInState extends State<DialedIn> with TickerProviderStateMixin<Diale
         child: IndexedStack(
           index:_currentIndex,
           children: allDestinations.map<Widget>((Destination destination) {
-            return BottomNavigationBarItem(
-              icon: Icon(destination.icon),
-              backgroundColor: destination.color,
-              title: Text(destination.title)
-            );
+            return DestinationView(destination: destination);
           }).toList(),
         ),
       ),
 
       bottomNavigationBar: BottomNavigationBar(
-        
+        currentIndex: _currentIndex,
+        onTap: (int index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: allDestinations.map((Destination destination) {
+          return BottomNavigationBarItem(
+            icon: Icon(destination.icon),
+            backgroundColor: destination.color,
+            title: Text(destination.title)
+          );
+        }).toList(),
       ),
+    );
+  }
+}
+void main() => runApp(DialedIn());
+
+class DialedIn extends StatelessWidget {
+  @override 
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'dialedIn',
+      theme: ThemeData.dark(),
+      home: HomePage(),
     );
   }
 }
