@@ -14,12 +14,20 @@ class DialedIn extends StatelessWidget {
         children: [
           Column(
             children: [
-              Text('Timer'),
+              RaisedButton(
+                onPressed: (){},
+                child: const Text('Timer'),
+                color: Colors.grey[900],                
+              ),
             ],
           ),//Timer button column
           Column(
             children: [
-              Text('Navigation'),
+              RaisedButton(
+                onPressed: () {},
+                child: const Text('Navigation'),
+                color: Colors.grey[900],
+              )
             ],
           ),//History button column
         ],
